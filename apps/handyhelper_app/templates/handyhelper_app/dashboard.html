@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" 
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
+    <link rel="stylesheet" type="text/css" 
+      href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <title>Handy Helper Dashboard</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="right">
+        <a href="/addjob">Add a Job</a> 
+      </div>
+      <p>Welcome, {{ user.first_name }}! | <a href="/logout">Logout</a> </p>
+      <div class = "main">
+        <div class="content">
+          <div class="content border">
+            <table>
+              <tr>
+                <th>Job</th>
+                <th>Location</th>
+                <th>Actions</th>
+              </tr>
+              {% for job in jobs %}
+              <tr>
+                <td>{{ job.title }}</td>
+                <td>{{ job.location }}</td>
+                <td>
+                  <a href="/view/{{ job.id }}">View</a>
+                  <a href="/addtomyjobs/{{ job.id }}">Add</a>
+                  {% if job.user.id == request.session.id %}
+                  <a href="/edit/{{ job.id }}">Edit</a>
+                  <a href="/delete/{{ job.id }}">Cancel</a>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </table>
+          </div>
+          <div class="content border">
+            <table>
+              <thead>
+                <tr>
+                  <th>My Jobs</th>
+                </tr>
+              </thead>
+            </table>
+            <table>
+              <tbody>
+                {% for job in user_jobs %}
+                <tr>
+                  <!-- <td><a href=" url 'tickets:show' ticket.id ">ticket.title</a></td> -->
+                  <td>{{ job.title|truncatechars:15 }}</td>
+                  <td>
+                    <!-- <a href=" url 'tickets:edit' ticket.id " class="button">Edit</a>
+                      <form action=" url 'tickets:delete' ticket.id " method="post"> -->
+                    {% csrf_token %}
+                    <a href="/view/{{ job.id }}">View</a>
+                    <a href="/delete/{{ job.id }}">Done</a>
+                    </form>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
